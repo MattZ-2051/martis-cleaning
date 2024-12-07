@@ -28,6 +28,6 @@
 <section class="mt-40">
 	<Review />
 </section>
-<section class="mt-40">
+<section class="my-40">
 	<Numbers />
 </section>
