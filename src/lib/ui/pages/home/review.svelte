@@ -3,6 +3,6 @@
 </script>
 
 <div class="flex flex-col items-center justify-center">
-	<p class="mb-12 text-center text-2xl">Reviews</p>
+	<p class="mb-12 text-center text-3xl font-light">Reviews</p>
 	<ReviewCard />
 </div>
