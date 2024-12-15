@@ -1,7 +1,6 @@
 <script lang="ts"></script>
 
-<header class="py-6">
-	<p class="mb-8 text-center">LOGO</p>
+<header class="h-full w-full bg-primary py-6">
 	<div class="flex items-center justify-center gap-x-8">
 		<a href="/home">Home</a>
 		<div class="divider"></div>

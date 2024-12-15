@@ -6,11 +6,9 @@
 </script>
 
 <main class="relative">
-	<div class="px-12">
-		<Header />
+	<Header />
+	<div class="h-full px-12">
 		{@render children()}
 	</div>
-	<div>
-		<Footer />
-	</div>
+	<Footer />
 </main>
