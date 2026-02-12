@@ -1,45 +1,40 @@
-# Stage 1: Dependencies
-FROM node:22-alpine AS deps
+# Use the Node alpine official image
+# https://hub.docker.com/_/node
+FROM node:lts-alpine AS build
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Set config
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV NPM_CONFIG_FUND=false
 
+# Create and change to the app directory.
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+# Copy the files to the container image
+COPY package*.json ./
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Install packages
+RUN npm ci
 
-# Stage 2: Builder
-FROM node:22-alpine AS builder
+# Copy local code to the container image.
+COPY . ./
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Build the app.
+RUN npm run build
 
+# Use the Caddy image
+FROM caddy
+
+# Create and change to the app directory.
 WORKDIR /app
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy Caddyfile to the container image.
+COPY Caddyfile ./
 
-# Copy source code
-COPY . .
+# Copy local code to the container image.
+RUN caddy fmt Caddyfile --overwrite
 
-# Build the application
-RUN pnpm run build
+# Copy files to the container image.
+COPY --from=build /app/dist ./dist
 
-# Stage 3: Runner
-FROM nginx:alpine AS runner
-
-# Copy custom nginx config (optional - uses default if not present)
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy built assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Use Caddy to run/serve the app
+CMD ["caddy", "run", "--config", "Caddyfile", "--adapter", "caddyfile"]

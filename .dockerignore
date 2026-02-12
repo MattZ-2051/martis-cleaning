@@ -69,11 +69,6 @@ docs
 logs
 *.log
 
-# Lock files from other package managers
-package-lock.json
-yarn.lock
-bun.lockb
-
 # Misc
 .editorconfig
 .prettierrc
